@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.s": "arm",
+        "fsl_iomuxc.h": "c",
+        "mcimx6y2.h": "c"
+    }
+}

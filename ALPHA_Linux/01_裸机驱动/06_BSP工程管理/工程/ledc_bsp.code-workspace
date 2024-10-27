@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+    ],
+    "settings": {
+        "files.associations": {
+            "*.s": "arm",
+            "bsp_clk.h": "c",
+            "bsp_delay.h": "c"
+        }
+    }
+}

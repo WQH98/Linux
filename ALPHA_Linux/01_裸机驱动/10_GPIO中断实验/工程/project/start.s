@@ -1,16 +1,4 @@
 .global _start
-.global _bss_start
-.global _bss_end
-
-_bss_start:
-    /*  这应该相当于C语言里面的变量
-        .ward表示在这里放了一个变量
-        __bss_start就是这个变量的标签 类似于变量名
-     */
-    .word __bss_start
-
-_bss_end:
-    .word __bss_end
 
 _start:
     ldr pc, =Reset_Handler      /* 复位中断服务函数 */
@@ -38,6 +26,7 @@ Reset_Handler:
     bic r0, r0, #(1 << 0)           /* 关闭MMU */
     MCR p15, 0, r0, c1, c0, 0       /* 将r0寄存器里面的数据写入到SCTLR寄存器 */
 
+#if 0
     /* 设置中断向量偏移 */
     ldr r0, =0x87800000
     dsb
@@ -45,6 +34,20 @@ Reset_Handler:
     MCR p15, 0, r0, c12, c0, 0      /* 设置VBAR寄存器=0x87800000 */
     dsb
     isb
+#endif
+
+.global _bss_start
+.global _bss_end
+
+_bss_start:
+    /*  这应该相当于C语言里面的变量
+        .ward表示在这里放了一个变量
+        __bss_start就是这个变量的标签 类似于变量名
+     */
+    .word __bss_start
+
+_bss_end:
+    .word __bss_end
 
     @ 清除BSS段
     ldr r0, _bss_start
@@ -115,8 +118,41 @@ NotUsed_Handler:
 
 /* IRQ中断服务函数 */
 IRQ_Handdler:
-    ldr r0, =IRQ_Handdler
-    bx r0
+    push {lr}                               /* 保存lr地址 */
+    push {r0-r3, r12}                       /* 保存r0-r3、r12寄存器 */
+    mrs r0, spsr                            /* 读取spsr寄存器 */
+    push {r0}                               /* 保存spsr寄存器 */
+
+    mrc p15, 4, r1, c15, c0, 0              /* 从CP15的C0寄存器内的值到R1寄存器中 
+                                             * 参考文档ARM-Cortex(armV7)编程手册V4.0.pdf P49
+                                             * Cortex-A7 Technical ReferenceMenua.pdf P68 P138      
+                                             */
+
+    add r1, r1, #0x2000                     /* GIC基地址加0x2000，也就是GIC的CPU接口端基地址 */
+    ldr r0, [r1, #0x0C]                     /* GIC的CPU接口端基地址加0x0C就是GICC_IAR寄存器 
+                                             * GICC_IAR寄存器保存着当前发生中断的中断号，我们要根据
+                                             * 这个中断号来决定调用哪个中断服务函数
+                                             */
+    push {r0, r1}                           /* 保存r0、r1 */
+    
+    cps #0x13                               /* 进入SVC模式，允许其他中断再次进去 */
+    
+    push {lr}                               /* 保存SVC模式的lr寄存器 */
+    ldr r2, =system_irqhandler              /* 加载C语言中断处理函数到r2寄存器中 */
+    blx r2                                  /* 运行C语言中断处理函数，带一个参数，保存在 */
+
+    pop {lr}                                /* 执行完C语言中断服务函数，lr出栈 */
+    cps #0x12                               /* 进入IRQ模式 */
+    pop {r0, r1}
+    str r0, [r1, #0x10]                     /* 中断执行完成，写EOIR */
+
+    pop {r0}
+    msr spsr_cxsf, r0                       /* 恢复spsr */
+
+    pop {r0-r3, r12}                        /* r0-r3、r12出栈 */
+    pop {lr}                                /* lr出栈 */
+    subs pc, lr, #4                         /* 将lr-4赋给pc */
+
 
 /* FIQ中断服务函数 */
 FIQ_Handler:

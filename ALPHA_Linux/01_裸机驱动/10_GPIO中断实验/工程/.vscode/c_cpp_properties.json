@@ -10,6 +10,7 @@
                 "${workspaceFolder}/bsp/beep",
                 "${workspaceFolder}/bsp/key",
                 "${workspaceFolder}/bsp/gpio",
+                "${workspaceFolder}/bsp/int",
                 "${workspaceFolder}/imx6u",
                 "${workspaceFolder}/project"
             ],

@@ -4,13 +4,14 @@
 #include "main.h"
 #include "bsp_beep.h"
 #include "bsp_key.h"
+#include "bsp_int.h"
+#include "bsp_exti.h"
 
 
 int main(void) {
-    int i = 0;
     unsigned char led_state = OFF;
-    unsigned char beep_state = OFF;
-    int key_value = 0;
+    // 初始化中断
+    int_init();
     // 初始化系统时钟
     imx6u_clk_init();
     // 使能外设时钟
@@ -21,24 +22,12 @@ int main(void) {
     beep_init();
     // 初始化按键
     key_init();
+    // 初始化外部中断
+    exti_init();
     while(1) {
-        key_value = key_get_value();
-        // 如果key_value为正 代表有效的按键值
-        if(key_value) {
-            switch(key_value) {
-                case KEY0_VALUE:
-                    beep_state = !beep_state;
-                    beep_switch(beep_state);
-                break;
-            }
-        }
-        i++;
-        if(i == 50) {
-            i = 0;
-            led_state = !led_state;
-            led_switch(LED0, led_state);
-        }
-        delay_ms(10);
+        led_state = !led_state;
+        led_switch(LED0, led_state);
+        delay_ms(500);
     }
     return 0;
 }

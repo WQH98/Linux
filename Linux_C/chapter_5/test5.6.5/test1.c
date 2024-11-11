@@ -30,18 +30,18 @@ int main(void) {
 
     /* 修改文件时间戳 */
 #if 1
-    ret = futimens(fd, NULL);
+    ret = futimens(fd, NULL);   // 设置为当前系统时间
 #endif
 
 #if 0
-    tmsp_arr[0].tv_nsec = UTIME_OMIT;
-    tmsp_arr[1].tv_nsec = UTIME_NOW;
+    tmsp_arr[0].tv_nsec = UTIME_OMIT;     // 访问时间保持不变
+    tmsp_arr[1].tv_nsec = UTIME_NOW;      // 内容修改时间设置为当前系统时间
     ret = futimens(fd, tmsp_arr);
 #endif
 
 #if 0
-    tmsp_arr[0].tv_nsec = UTIME_NOW;
-    tmsp_arr[1].tv_nsec = UTIME_OMIT;
+    tmsp_arr[0].tv_nsec = UTIME_NOW;      // 访问时间设置为当前系统时间
+    tmsp_arr[1].tv_nsec = UTIME_OMIT;     // 内容修改时间保持不变
     ret = futimens(fd, tmsp_arr);
 #endif
 

@@ -35,7 +35,7 @@ void epit1_irqhandler(unsigned int gicciar, void *pram) {
 
     state = !state;
     /* 中断发生了 */
-    if(EPIT1->SR & 0x01 == 1) {
+    if((EPIT1->SR & 0x01) == 1) {
         led_switch(LED0, state);        // 翻转LED灯
     }  
 

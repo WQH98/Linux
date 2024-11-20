@@ -81,7 +81,7 @@ void filter_timer_restart(unsigned int value) {
 /* EPIT1定时器中断处理函数 */
 void filter_timer_irqhandler(unsigned int gicciar, void *param) {
     static unsigned char state  = OFF;
-    if(EPIT1->SR & 0x01 == 1) {
+    if((EPIT1->SR & 0x01) == 1) {
         /* 关闭定时器 */
         filter_timer_stop();
         if(gpio_read_pin(GPIO1, 18) == 0) {

@@ -12,6 +12,7 @@
                 "${workspaceFolder}/bsp/gpio",
                 "${workspaceFolder}/bsp/int",
                 "${workspaceFolder}/bsp/epit",
+                "${workspaceFolder}/bsp/exti",
                 "${workspaceFolder}/imx6u",
                 "${workspaceFolder}/project"
             ],

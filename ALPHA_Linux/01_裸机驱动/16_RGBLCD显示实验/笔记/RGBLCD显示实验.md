@@ -36,16 +36,39 @@ RGB格式的屏幕，一般叫做RGB接口屏。
 ###### 二、6ULL ICDIF控制器接口原理
 
 1、我们使用DOTCLK接口，也就是VSYNC、HSYNC、ENABLE(DE)和DOTCLK(PCLK)。
+
 2、LCDIF_CTRL寄存器，bit0必须置1。bit1设置数据格式24位全部有效，设置为0。bit5设置LCDIF接口工作在主机模式下，必须要置1。bit9~8设置输入像素格式为24bit，设置为3。bit11~10设置数据传输宽度为24bit，设置为3。bit13~12设置数据交换，我们不需要交换，设置为0。bit15~14设置输入数据交换，我们不需要交换，设置为0。bit17置1，LCD工作在DOTCLK模式下。bit19必须置1，因为工作在DOTCLK模式下。bit31是复位功能，必须置0。
+
 3、LCDIF_CTRL1寄存器，bit19~16设置为0x07，相当于24位格式。
+
 4、LCDIF_TRANSFER_COUNT寄存器，bit15~0是LCD一行的像素，设置为1024。bit31~16是LCD一共有多少行，设置为600。
+
 5、LCDIF_VDCTRL0寄存器，bit17~0为VSPW参数，bit20设置VSYNC信号的宽度单位，设置为1。bit21设置为1。bit24设置ENABLE信号极性，为0的时候是低电平有效，为1的时候是高电平有效，设置为1。bit25设置CLK信号极性，设置为0。bit26设置HSYNC信号极性，设置为0，低电平有效。bit27设置VSYNC信号极性，设置为0，低电平有效。bit28设置为1，开始ENABLE信号。bit29设置为0，VSYNC输出。
+
 6、LCDIF_VDCTRL1寄存器为两个VSYNC信号之间的长度，那就是VSPW + VBP + HEIGHT + VFP。
+
 7、LCDIF_VDCTRL2寄存器bit17~0是两个HSYNC信号之间的长度，那就是HSPW + HBP + WIDGET + HFP。bit31~18为HSPW。
+
 8、LCDIF_VDCTRL3寄存器，bit15~0是VBP + VSPW。bit27~16是HBP + HSPW。
+
 9、LCDIF_VDCTRL4寄存器，bit17~0是一行有多少个像素点，1024。
+
 10、LCDIF_CUR_BUF寄存器，LCD当前缓存，显存首地址。
+
 11、LCDIF_NEXT_BUF寄存器，LCD下一帧数据首地址。
-12、LCD IO初始化。
+
+12、LCD IO初始化。 
 
 ###### 三、LCD像素时钟的设置
+
+1、LCD需要一个CLK信号，这个时钟信号是6ULL的CLK引脚发送给RGBLCD屏幕的。比如7寸1024*600的屏幕需要51.2MHz的CLK。 LCDIF_CLK_ROOT就是6ULL的像素时钟。设置PLL5也就是Video PLL，为LCD的时钟源。
+
+2、PLL5_CLK = Fref * DIV_SELECT，DIV_SELECT就是CCM_ANALOG_PLL_VIDEO的bit6~0，也就是DIV_SELECT位。可选范围27~54。设置CCM_ANALOG_PLL_VIDEO寄存器的bit20~19为2，表示1分频。
+
+3、设置CCM_ANALOG_MISC2寄存器的bit31~30为0，表示1分频。
+
+4、不使用小数分频器，因此CCM_ANALOG_PLL_VODEO_NUM寄存器设置为0，再设置CCM_ANALOG_PLL_VIDEO_DENOM寄存器也等于0。
+
+5、CCM_CSCDR2寄存器的bit17~15，设置LCDIF_PRE_CLK_SEL，选择LCDIF_CLK_ROOT的时钟源，设置为2，表示使用LCDIF时钟源为PLL5。bit14~12为LCDIF_PRED位，设置前级分频，可以设置0~7分别对应1~8分频。bit11~9为LCDIF_CLK_SEL，选择LCD CLK的最终时钟源，设置为0，表示LCDIF的最终时钟源来源于pre-muxed LCDIF clock。
+
+6、CCM_CBCMR寄存器的bit25~23为LCDIF_PODF，设置第二集分频，可设置为0~7分别对应1~8分频。

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.s": "arm",
+        "bsp_clk.h": "c"
+    }
+}

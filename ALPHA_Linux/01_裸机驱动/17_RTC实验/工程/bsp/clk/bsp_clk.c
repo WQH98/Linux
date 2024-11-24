@@ -84,7 +84,7 @@ void imx6u_clk_init(void) {
 
     // PER_CLK_ROOT = 66MHz
     // PERCLK_CLK_ROOT时钟源为IPG_CLK = 66MHz
-    CCM->CSCMR1 &= (1 << 6);
+    CCM->CSCMR1 &= ~(1 << 6);
     // 1分频 PERCLK_CLK_ROOT = 66MHz
     CCM->CSCMR1 &= ~(0x3F << 0);
 

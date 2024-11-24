@@ -38,8 +38,8 @@ int main(void) {
         led_switch(LED0, state);
         lcd_clear(backcolor[index]);
         lcd_show_string(10, 40, 260, 32, 32, (char *)"ALPHA IMX6U");
-        lcd_show_string(10, 80, 260, 24, 32, (char *)"RGBLCD TEST");
-        lcd_show_string(10, 110, 260, 16, 32, (char *)"ATOM@ALIENTEK");
+        lcd_show_string(10, 70, 260, 24, 32, (char *)"RGBLCD TEST");
+        lcd_show_string(10, 100, 260, 16, 32, (char *)"ATOM@ALIENTEK");
         lcd_show_string(10, 130, 260, 12, 32, (char *)"2024/11/23");
         index++;
 		if(index == 10)

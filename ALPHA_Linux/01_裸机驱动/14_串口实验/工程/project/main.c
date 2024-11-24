@@ -37,7 +37,7 @@ int main(void) {
 #endif
         printf("请输入两个整数，使用空格隔开：");
         scanf("%d %d", &a, &b);
-        printf("\r\n数据 %d + %d = %d", a, b, a + b);
+        printf("\r\n数据 %d + %d = %d\r\n", a, b, a + b);
 
     }
     return 0;

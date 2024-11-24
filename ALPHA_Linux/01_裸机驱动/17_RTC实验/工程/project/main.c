@@ -21,8 +21,8 @@ int main(void) {
     int_init();             // 初始化中断
     imx6u_clk_init();       // 初始化系统时钟
     delay_init();           // 初始化延时
-    uart1_init();           // 初始化串口1
     clk_enable();           // 使能外设时钟
+    uart1_init();           // 初始化串口1
     led_init();             // 初始化LED
     beep_init();            // 初始化蜂鸣器
     key_init();             // 初始化按键
@@ -35,11 +35,12 @@ int main(void) {
 	lcd_show_string(50, 60, 200, 16, 16, (char*)"2019/3/27");  
 	tftlcd_dev.forecolor = LCD_BLUE;
 	memset(buf, 0, sizeof(buf));
-
-    while(1) {
-        if(t == 100)	//1s时间到了
+	
+	while(1)
+	{
+		if(t==100)	//1s时间到了
 		{
-			t = 0;
+			t=0;
 			printf("will be running %d s......\r", i);
 			
 			lcd_fill(50, 90, 370, 110, tftlcd_dev.backcolor); /* 清屏 */
@@ -67,8 +68,7 @@ int main(void) {
 		delay_ms(10);
 		t++;
 	}
-
-    tftlcd_dev.forecolor = LCD_RED;
+	tftlcd_dev.forecolor = LCD_RED;
 	lcd_fill(50, 90, 370, 110, tftlcd_dev.backcolor); /* 清屏 */
 	lcd_show_string(50, 90, 200, 16, 16, (char*)"Current Time:");  			/* 显示字符串 */
 	tftlcd_dev.forecolor = LCD_BLUE;
@@ -84,5 +84,5 @@ int main(void) {
 		led_switch(LED0,state);
 		delay_ms(1000);	/* 延时一秒 */
 	}
-    return 0;
+	return 0;
 }

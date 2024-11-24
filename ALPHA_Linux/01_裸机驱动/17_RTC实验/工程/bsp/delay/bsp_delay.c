@@ -26,7 +26,7 @@ void delay_us(unsigned int usdelay) {
     unsigned long cnt_value = 0;
     old_cnt = GPT1->CNT;
     while(1) {
-        new_cnt = cnt_value;
+        new_cnt = GPT1->CNT;
         if(new_cnt != old_cnt) {
             if(new_cnt > old_cnt) {
                 cnt_value += new_cnt - old_cnt;

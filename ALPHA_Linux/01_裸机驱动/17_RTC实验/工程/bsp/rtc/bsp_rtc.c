@@ -9,8 +9,8 @@ void rtc_init(void) {
 	 */
 	SNVS->HPCOMR |= (1 << 31) | (1 << 8);
 
+#if 0
     struct rtc_datetime rtcdate;
-
 	rtcdate.year = 2024;
     rtcdate.month = 11;
     rtcdate.day = 23;
@@ -18,6 +18,7 @@ void rtc_init(void) {
     rtcdate.minute = 52;
     rtcdate.second = 0;
 	rtc_setdatetime(&rtcdate);       // 初始化时间和日期
+#endif
 
     /* 使能RTC */
     rtc_enable();

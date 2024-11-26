@@ -13,7 +13,8 @@
             "mcimx6y2.h": "c",
             "bsp_uart.h": "c",
             "stdio.h": "c",
-            "bsp_lcdapi.h": "c"
+            "bsp_lcdapi.h": "c",
+            "bsp_ap3216c.h": "c"
         }
     }
 }

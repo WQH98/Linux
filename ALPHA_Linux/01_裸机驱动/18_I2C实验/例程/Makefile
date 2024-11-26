@@ -1,5 +1,5 @@
 CROSS_COMPILE ?= arm-linux-gnueabihf-
-TARGET		  ?= rtc
+TARGET		  ?= ap3216c
 
 CC 				:= $(CROSS_COMPILE)gcc
 LD 				:= $(CROSS_COMPILE)ld
@@ -22,7 +22,9 @@ INCUDIRS		:= 	imx6u \
 					bsp/uart \
 					stdio/include \
 					bsp/lcd \
-					bsp/rtc
+					bsp/rtc	\
+					bsp/i2c \
+					bsp/ap3216c
 			
 SRCDIRS			:= 	project \
 					bsp/clk \
@@ -38,7 +40,9 @@ SRCDIRS			:= 	project \
 					bsp/uart \
 					stdio/lib \
 					bsp/lcd \
-					bsp/rtc
+					bsp/rtc	\
+					bsp/i2c \
+					bsp/ap3216c
 
 INCLUDE 		:= 	$(patsubst %, -I %, $(INCUDIRS))
 

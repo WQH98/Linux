@@ -21,7 +21,7 @@ void spi_init(ECSPI_Type *base) {
 }
 
 /* SPI发送/接收函数 */
-unsigned char spicho_read_write_byte(ECSPI_Type *base, unsigned char txdata) {
+unsigned char spich0_read_write_byte(ECSPI_Type *base, unsigned char txdata) {
     uint32_t spi_tx_data = txdata;
     uint32_t spi_rx_data = 0;
 

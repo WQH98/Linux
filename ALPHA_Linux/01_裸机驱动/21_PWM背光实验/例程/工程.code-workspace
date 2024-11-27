@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+    ],
+    "settings": {
+        "files.associations": {
+            "*.s": "arm",
+            "bsp_gpio.h": "c",
+            "bsp_int.h": "c",
+            "bsp_delay.h": "c",
+            "mcimx6y2.h": "c",
+            "bsp_uart.h": "c",
+            "stdio.h": "c",
+            "bsp_lcdapi.h": "c",
+            "bsp_ap3216c.h": "c",
+            "bsp_icm20608.h": "c"
+        }
+    }
+}

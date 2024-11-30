@@ -4,5 +4,18 @@
 			"path": "."
 		}
     ],
-    "settings": {}
+    "settings": {
+        "files.associations": {
+            "*.s": "arm",
+            "module.h": "c",
+            "kmod.h": "c",
+            "stat.h": "c",
+            "types.h": "c",
+            "time.h": "c",
+            "time64.h": "c",
+            "seqlock.h": "c",
+            "spinlock.h": "c",
+            "preempt.h": "c"
+        }
+    }
 }

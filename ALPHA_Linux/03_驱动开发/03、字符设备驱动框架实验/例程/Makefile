@@ -1,4 +1,4 @@
-KERNELDIR := /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/00、tools/01、linux/linux-imx-rel_imx_4.1.15_2.1.0_ga_alientek
+KERNELDIR := /home/wqh/Project/Linux_tools/nxp_linux/linux-imx-rel_imx_4.1.15_2.1.0_ga
 
 CURRENT_PATH := $(shell pwd)
 obj-m := chrdevbase.o
@@ -9,4 +9,4 @@ kernel_modules:
 	$(MAKE) -C $(KERNELDIR) M=$(CURRENT_PATH) modules
 
 clean:
-	$(MAKE) -C &(KERNELDIR) M=$(CURRENT_PATH) clean
+	$(MAKE) -C $(KERNELDIR) M=$(CURRENT_PATH) clean

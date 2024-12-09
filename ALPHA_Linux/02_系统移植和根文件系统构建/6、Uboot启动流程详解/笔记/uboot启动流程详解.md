@@ -19,4 +19,3 @@ bicne = bic + ne
 ①、reset函数目的是将处理器设置为SVC模式，并且关闭FIQ和IRQ。
 ②、设置中断向量。
 ③、初始化CP15。
-④、

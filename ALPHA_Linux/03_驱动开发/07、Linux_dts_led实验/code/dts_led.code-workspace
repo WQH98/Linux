@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+    ],
+    "settings": {
+        "files.associations": {
+            "*.s": "arm",
+            "cdev.h": "c",
+            "slab.h": "c"
+        }
+    }
+}

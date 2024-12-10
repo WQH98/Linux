@@ -1,0 +1,1 @@
+cmd_/home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/06、Linux设备树详解/code/dtsof.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/06、Linux设备树详解/code/dtsof.ko /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/06、Linux设备树详解/code/dtsof.o /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/06、Linux设备树详解/code/dtsof.mod.o

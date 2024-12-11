@@ -7,10 +7,23 @@
 #include "linux/cdev.h"
 #include "linux/device.h"
 #include "linux/of.h"
+#include "linux/of_address.h"
 #include "linux/slab.h"
+
 
 #define DTS_LED_CNT     1           // 设备号数量
 #define DTS_LED_NAME    "dts_led"   // 设备名
+#define LED_ON          1
+#define LED_OFF         0
+
+
+/* 地址映射后的虚拟复制指针 */
+static void __iomem *IMX6U_CCM_CCGR1;
+static void __iomem *IMX6U_SW_MUX_GPIO1_IO03;
+static void __iomem *IMX6U_SW_PAD_GPIO1_IO03;
+static void __iomem *IMX6U_GPIO1_DR;
+static void __iomem *IMX6U_GPIO1_GDIR;
+
 
 /* dts_led设备结构体 */
 struct dts_led_dev {
@@ -44,13 +57,35 @@ static int dts_led_close(struct inode *inode, struct file *filp) {
     return ret;
 }
 
-static ssize_t dts_led_write(struct file *filp, const char __user *buf, size_t count, loff_t *ppos) {
-    int ret = 0;
-
-    struct dts_led_dev *dev = (struct dts_led_dev *)filp->private_data;
-    if(dev->major) {
-
+/* LED打开关闭函数 */
+static void led_switch(u8 sta) {
+    u32 val = 0;
+    if(sta == LED_ON) {
+        val = readl(IMX6U_GPIO1_DR);
+        val &= ~(1 << 3);
+        writel(val, IMX6U_GPIO1_DR);
     }
+    else if(sta == LED_OFF) {
+        val = readl(IMX6U_GPIO1_DR);
+        val |= (1 << 3);
+        writel(val, IMX6U_GPIO1_DR);       
+    }
+}
+
+static ssize_t dts_led_write(struct file *filp, const char __user *buf, size_t count, loff_t *ppos) {
+    
+    int ret = 0;
+    int ret_value = 0;
+    u8 data_buf[1];
+
+    ret_value = copy_from_user(data_buf, buf, count);
+    if(ret_value < 0) {
+        printk("kernel write failed\r\n");
+        return -EFAULT;
+    }
+
+    /* 判断是开灯还是关灯 */
+    led_switch(data_buf[0]);
 
     return ret;
 }
@@ -71,6 +106,7 @@ static int __init dts_led_init(void) {
     u32 *reg_data;
     u8 i = 0;
     u32 elemsize = 0;
+    u32 val = 0;
 
     /* 1、注册字符设备 */
     dts_led.major = 0;              // 设备号由内核分配
@@ -159,6 +195,37 @@ static int __init dts_led_init(void) {
         }
     }
 
+    /* 设置地址映射 */
+#if 0    
+    IMX6U_CCM_CCGR1 = ioremap(reg_data[0], reg_data[1]);
+    IMX6U_SW_MUX_GPIO1_IO03 = ioremap(reg_data[2], reg_data[3]);
+    IMX6U_SW_PAD_GPIO1_IO03 = ioremap(reg_data[4], reg_data[5]);
+    IMX6U_GPIO1_DR = ioremap(reg_data[6], reg_data[7]);
+    IMX6U_GPIO1_GDIR = ioremap(reg_data[8], reg_data[9]);
+#else
+    IMX6U_CCM_CCGR1 = of_iomap(dts_led.nd, 0);
+    IMX6U_SW_MUX_GPIO1_IO03 = of_iomap(dts_led.nd, 1);
+    IMX6U_SW_PAD_GPIO1_IO03 = of_iomap(dts_led.nd, 2);
+    IMX6U_GPIO1_DR = of_iomap(dts_led.nd, 3);
+    IMX6U_GPIO1_GDIR = of_iomap(dts_led.nd, 4);
+#endif
+    /* 初始化GPIO */
+    val = readl(IMX6U_CCM_CCGR1);
+    val &= ~(3 << 26);      // 先清除之前设置的bit26、bit27
+    val |= (3 << 26);       // bit26、bit27置1
+    writel(val, IMX6U_CCM_CCGR1);
+
+    writel(0x05, IMX6U_SW_MUX_GPIO1_IO03);          // 设置复用
+    writel(0x10B0, IMX6U_SW_PAD_GPIO1_IO03);        // 设置电气属性
+
+    val = readl(IMX6U_GPIO1_GDIR);
+    val |= (1 << 3);        // bit3置1，设置为输出
+    writel(val, IMX6U_GPIO1_GDIR);
+
+    val = readl(IMX6U_GPIO1_DR);
+    val |= (1 << 3);        // bit3置1，关闭LED
+    writel(val, IMX6U_GPIO1_DR);
+
     kfree(reg_data);
 
     return 0;
@@ -180,6 +247,20 @@ fail_devid:
 
 /* 出口 */
 static void __exit dts_led_exit(void) {
+
+    u32 val = 0;
+
+    /* 关闭LED */
+    val = readl(IMX6U_GPIO1_DR);
+    val |= (1 << 3);
+    writel(val, IMX6U_GPIO1_DR);
+
+    /*  释放内存映射 */
+    iounmap(IMX6U_CCM_CCGR1);
+    iounmap(IMX6U_SW_MUX_GPIO1_IO03);
+    iounmap(IMX6U_SW_PAD_GPIO1_IO03);
+    iounmap(IMX6U_GPIO1_DR);
+    iounmap(IMX6U_GPIO1_GDIR);
 
     /* 删除字符设备 */
     cdev_del(&dts_led.cdev);

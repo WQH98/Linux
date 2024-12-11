@@ -552,6 +552,8 @@ deps_/home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/07、Linux_dts_led实�
   include/uapi/linux/uuid.h \
   include/linux/property.h \
   include/linux/fwnode.h \
+  include/linux/of_address.h \
+    $(wildcard include/config/of/address.h) \
   include/linux/slab.h \
     $(wildcard include/config/debug/slab.h) \
     $(wildcard include/config/kmemcheck.h) \

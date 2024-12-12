@@ -14,6 +14,8 @@
 
 #define GPIO_LED_CNT        1
 #define GPIO_LED_NAME       "gpio_led"
+#define LED_OFF             0
+#define LED_ON              1
 
 /* gpio_led设备结构体 */
 struct gpio_led_dev {
@@ -48,6 +50,20 @@ static int gpio_led_close(struct inode *inode, struct file *filp) {
 static ssize_t gpio_led_write(struct file *filp, const char __user *buf, size_t count, loff_t *ppos) {
 
     int ret = 0;
+    unsigned char data_buf[1];
+    struct gpio_led_dev *dev = filp->private_data;
+
+    ret = copy_from_user(data_buf, buf, count);
+    if(ret < 0) {
+        return -EINVAL;
+    }
+
+    if(data_buf[0] == LED_ON) {
+        gpio_set_value(dev->gpio_led_index, 0);
+    }
+    else if(data_buf[0] == LED_OFF) {
+        gpio_set_value(dev->gpio_led_index, 1);
+    }
 
     return ret;
 }
@@ -70,31 +86,43 @@ static int __init gpio_led_init(void) {
     if(gpio_led.major) {
         // 给定主设备号
         gpio_led.devid = MKDEV(gpio_led.major, 0);
-        register_chrdev_region(gpio_led.devid, GPIO_LED_CNT, GPIO_LED_NAME);
+        ret = register_chrdev_region(gpio_led.devid, GPIO_LED_CNT, GPIO_LED_NAME);
     }
     else {
         // 没给定设备号
-        alloc_chrdev_region(&gpio_led.devid, 0, GPIO_LED_CNT, GPIO_LED_NAME);
+        ret = alloc_chrdev_region(&gpio_led.devid, 0, GPIO_LED_CNT, GPIO_LED_NAME);
         gpio_led.major = MAJOR(gpio_led.devid);
         gpio_led.minor = MINOR(gpio_led.devid);
+    }
+    if(ret < 0) {
+        printk("fail to allow devid\r\n");
+        goto fail_allow_devid;
     }
     printk("major is %d, minor is %d\r\n", gpio_led.major, gpio_led.minor);
 
     /* 初始化cdev */
     gpio_led.cdev.owner = THIS_MODULE;
     cdev_init(&gpio_led.cdev, &gpio_led_fops);
-    cdev_add(&gpio_led.cdev, gpio_led.devid, GPIO_LED_CNT);
+    ret = cdev_add(&gpio_led.cdev, gpio_led.devid, GPIO_LED_CNT);
+    if(ret < 0) {
+        printk("fail to add cdev\r\n");
+        goto fail_add_cdev;
+    }
 
     /* 创建类 */
     gpio_led.class = class_create(THIS_MODULE, GPIO_LED_NAME);
     if(IS_ERR(gpio_led.class)) {
-        return PTR_ERR(gpio_led.class);
+        ret = PTR_ERR(gpio_led.class);
+        printk("fail to create class\r\n");
+        goto fail_create_class;
     }
 
     /* 创建设备 */
     gpio_led.device = device_create(gpio_led.class, NULL, gpio_led.devid, NULL, GPIO_LED_NAME);
     if(IS_ERR(gpio_led.device)) {
-        return PTR_ERR(gpio_led.device);
+        ret = PTR_ERR(gpio_led.device);
+        printk("fail to create device\r\n");
+        goto fail_create_device;
     }
 
     /* 获取设备节点 */
@@ -136,18 +164,30 @@ static int __init gpio_led_init(void) {
 
 
 fail_gpio_set_output:
-    gpio_free(gpio_led.gpio_led_index);
+    gpio_free(gpio_led.gpio_led_index);     // 释放IO
 fail_gpio_request:
 fail_find_gpio:
 fail_find_node:
-
+    device_destroy(gpio_led.class, gpio_led.devid);     // 摧毁设备
+fail_create_device:
+    class_destroy(gpio_led.class);      // 摧毁类
+fail_create_class:
+    cdev_del(&gpio_led.cdev);       // 删除字符设备
+fail_add_cdev:
+    unregister_chrdev_region(gpio_led.devid, GPIO_LED_CNT);     // 释放设备号
+fail_allow_devid:
+    
+    
     return ret;
 }
 
 /* 驱动出口函数 */
 static void __exit gpio_led_exit(void) {
 
-    /* h删除字符设备 */
+    /* 关灯 */
+    gpio_set_value(gpio_led.gpio_led_index, 1);
+
+    /* 删除字符设备 */
     cdev_del(&gpio_led.cdev);
 
     /* 释放设备号 */

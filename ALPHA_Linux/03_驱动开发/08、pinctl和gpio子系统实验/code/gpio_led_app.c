@@ -13,9 +13,9 @@
 /*
     argc：应用程序参数个数
     argv：应用程序参数,字符串形式
-    ./dts_led_app <filename> <0:1> 0表示关灯 1表示开灯
-    ./dts_led_app /dev/dts_led 0    表示关灯
-    ./dts_led_app /dev/dts_led 1    表示开灯
+    ./gpio_led_app <filename> <0:1> 0表示关灯 1表示开灯
+    ./gpio_led_app /dev/gpio_led 0    表示关灯
+    ./gpio_led_app /dev/gpio_led 1    表示开灯
  */
 int main(int argc, char *argv[]) {
 

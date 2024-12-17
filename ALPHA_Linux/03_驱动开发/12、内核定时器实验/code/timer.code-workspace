@@ -7,7 +7,8 @@
     "settings": {
         "files.associations": {
             "*.s": "arm",
-            "io.h": "c"
+            "io.h": "c",
+            "gpio.h": "c"
         }
     }
 }

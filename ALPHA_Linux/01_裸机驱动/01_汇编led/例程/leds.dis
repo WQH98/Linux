@@ -75,7 +75,7 @@ Disassembly of section .debug_aranges:
 Disassembly of section .debug_info:
 
 00000000 <.debug_info>:
-   0:	00000067 	andeq	r0, r0, r7, rrx
+   0:	00000073 	andeq	r0, r0, r3, ror r0
    4:	00000002 	andeq	r0, r0, r2
    8:	01040000 	mrseq	r0, (UNDEF: 4)
    c:	00000000 	andeq	r0, r0, r0
@@ -87,21 +87,24 @@ Disassembly of section .debug_info:
   24:	6871772f 	ldmdavs	r1!, {r0, r1, r2, r3, r5, r8, r9, sl, ip, sp, lr}^
   28:	6f72502f 	svcvs	0x0072502f
   2c:	7463656a 	strbtvc	r6, [r3], #-1386	; 0x56a
-  30:	6e696c2f 	cdpvs	12, 6, cr6, cr9, cr15, {1}
-  34:	302f7875 	eorcc	r7, pc, r5, ror r8	; <UNPREDICTABLE>
-  38:	a3e85f31 	mvnge	r5, #49, 30	; 0xc4
-  3c:	ba9ce6b8 	blt	fe739b24 <__bss_end__+0x76f29a84>
-  40:	e5b1a9e9 	ldr	sl, [r1, #2537]!	; 0x9e9
-  44:	302fa88a 	eorcc	sl, pc, sl, lsl #17
-  48:	b1e65f31 	mvnlt	r5, r1, lsr pc
-  4c:	96bce787 	ldrtls	lr, [ip], r7, lsl #15
-  50:	2f64656c 	svccs	0x0064656c
-  54:	e7a3bbe4 	str	fp, [r3, r4, ror #23]!
-  58:	470081a0 	strmi	r8, [r0, -r0, lsr #3]
-  5c:	4120554e 	teqmi	r0, lr, asr #10
-  60:	2e322053 	mrccs	0, 1, r2, cr2, cr3, {2}
-  64:	302e3432 	eorcc	r3, lr, r2, lsr r4
-  68:	地址 0x0000000000000068 越界。
+  30:	6e694c2f 	cdpvs	12, 6, cr4, cr9, cr15, {1}
+  34:	412f7875 	teqmi	pc, r5, ror r8	; <UNPREDICTABLE>
+  38:	4148504c 	cmpmi	r8, ip, asr #32
+  3c:	6e694c5f 	mcrvs	12, 3, r4, cr9, cr15, {2}
+  40:	302f7875 	eorcc	r7, pc, r5, ror r8	; <UNPREDICTABLE>
+  44:	a3e85f31 	mvnge	r5, #49, 30	; 0xc4
+  48:	ba9ce6b8 	blt	fe739b30 <__bss_end__+0x76f29a90>
+  4c:	e5b1a9e9 	ldr	sl, [r1, #2537]!	; 0x9e9
+  50:	302fa88a 	eorcc	sl, pc, sl, lsl #17
+  54:	b1e65f31 	mvnlt	r5, r1, lsr pc
+  58:	96bce787 	ldrtls	lr, [ip], r7, lsl #15
+  5c:	2f64656c 	svccs	0x0064656c
+  60:	e78bbee4 	str	fp, [fp, r4, ror #29]
+  64:	47008ba8 	strmi	r8, [r0, -r8, lsr #23]
+  68:	4120554e 	teqmi	r0, lr, asr #10
+  6c:	2e322053 	mrccs	0, 1, r2, cr2, cr3, {2}
+  70:	302e3432 	eorcc	r3, lr, r2, lsr r4
+  74:	地址 0x0000000000000074 越界。
 
 
 Disassembly of section .debug_abbrev:

@@ -17,6 +17,7 @@
 #include "linux/interrupt.h"
 #include "linux/of_irq.h"
 #include "linux/ide.h"
+#include "linux/poll.h"
 
 
 #define NOBLOCKIO_NUM           1
@@ -69,7 +70,19 @@ static ssize_t noblockio_read(struct file *flip, char __user *buf, size_t count,
     unsigned char key_value = 0;
     unsigned char key_release_flag = 0;
 
-    
+    /* 以非阻塞的方式访问 */
+    if(flip->f_flags & O_NONBLOCK) {
+        /* 如果现在按键没按下 */
+        if(atomic_read(&dev->key_release_flag) == 0) {
+            /* 直接返回错误 */
+            return -EINVAL;
+        }
+    }
+    /* 以阻塞的方式访问 */
+    else {
+        /* 等待事件 等待按键有效 */
+        wait_event_interruptible(dev->r_wait, atomic_read(&dev->key_release_flag));
+    }
 
 #if 0
     /* 等待事件 等待按键有效 */
@@ -125,17 +138,32 @@ static ssize_t noblockio_read(struct file *flip, char __user *buf, size_t count,
     return 0;
 
 data_err:
-    /* 将当前任务或线程设置为运行状态 */
-    __set_current_state(TASK_RUNNING);
-    /* 将对应的队列项从等待队列头删除 */
-    remove_wait_queue(&dev->r_wait, &wait);
     return ret;
+}
+
+static unsigned int noblockio_poll(struct file *filp, struct poll_table_struct *wait) {
+
+    int mask = 0;
+    struct noblockio_dev *dev = filp->private_data;
+
+    poll_wait(filp, &dev->r_wait, wait);
+
+    /* 判断是否可读 */
+    /* 按键按下可读 */
+    if(atomic_read(&dev->key_release_flag)) {
+        /* 返回POLLIN */
+        mask = POLLIN | POLLRDNORM;
+    }
+    
+
+    return mask;
 }
 
 static const struct file_operations noblockio_fops = {
     .owner = THIS_MODULE,
     .open = noblockio_open,
     .read = noblockio_read,
+    .poll = noblockio_poll,
 };
 
 /* 按键中断函数 */

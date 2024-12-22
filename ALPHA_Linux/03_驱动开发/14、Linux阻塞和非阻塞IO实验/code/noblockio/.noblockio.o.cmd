@@ -914,6 +914,10 @@ deps_/home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/14、Linux阻塞和非�
   arch/arm/include/asm/mach/pci.h \
   include/linux/cdrom.h \
   include/uapi/linux/cdrom.h \
+  include/linux/poll.h \
+  include/uapi/linux/poll.h \
+  arch/arm/include/generated/asm/poll.h \
+  include/uapi/asm-generic/poll.h \
 
 /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/14、Linux阻塞和非阻塞IO实验/code/noblockio/noblockio.o: $(deps_/home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/14、Linux阻塞和非阻塞IO实验/code/noblockio/noblockio.o)
 

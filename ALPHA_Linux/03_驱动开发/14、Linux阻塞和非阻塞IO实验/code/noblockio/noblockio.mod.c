@@ -46,11 +46,10 @@ __attribute__((section("__versions"))) = {
 	{ 0xd85cd67e, __VMLINUX_SYMBOL_STR(__wake_up) },
 	{ 0x83f62a58, __VMLINUX_SYMBOL_STR(gpiod_get_raw_value) },
 	{ 0x3089e8ae, __VMLINUX_SYMBOL_STR(gpio_to_desc) },
-	{ 0x1000e51, __VMLINUX_SYMBOL_STR(schedule) },
-	{ 0xc7bcbc8d, __VMLINUX_SYMBOL_STR(add_wait_queue) },
 	{ 0x67c2fa54, __VMLINUX_SYMBOL_STR(__copy_to_user) },
-	{ 0x4c86184b, __VMLINUX_SYMBOL_STR(remove_wait_queue) },
-	{ 0xffd5a395, __VMLINUX_SYMBOL_STR(default_wake_function) },
+	{ 0x1cfb04fa, __VMLINUX_SYMBOL_STR(finish_wait) },
+	{ 0x344b7739, __VMLINUX_SYMBOL_STR(prepare_to_wait_event) },
+	{ 0x1000e51, __VMLINUX_SYMBOL_STR(schedule) },
 	{ 0xefd6cf06, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr0) },
 };
 
@@ -60,4 +59,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "253FA65042DAFC0AD2A0BB6");
+MODULE_INFO(srcversion, "57935598591E7D76B41E7E3");

@@ -74,4 +74,5 @@ device_register
 
 1、方便开发，Linux提出了驱动分离与分层。
 2、进一步引出了驱动-总线-设备驱动模型，或者框架。
-3、对于SOC内部的RTC、timer等等不好归结为具体的总线，为此Linux内核提出了一个虚拟总线：platform总线。
+3、对于SOC内部的RTC、timer等等不好归结为具体的总线，为此Linux内核提出了一个虚拟总线：platform总线。platform设备和platform驱动。
+

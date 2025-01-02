@@ -1,0 +1,1 @@
+cmd_/home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/23、SPI驱动实验/code/icm20608.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/23、SPI驱动实验/code/icm20608.ko /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/23、SPI驱动实验/code/icm20608.o /home/wqh/Project/Linux/ALPHA_Linux/03_驱动开发/23、SPI驱动实验/code/icm20608.mod.o

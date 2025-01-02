@@ -35,7 +35,7 @@ SPI设备驱动就是具体的SPI芯片驱动，比如ICM20608。
 
 spi_device：每个spi_device下都有一个spi_master，每个SPI设备，肯定挂载到了一个SPI控制器，比如ICM20608挂载到了6ULL的ECSPI3接口上。
 
-spi_driver：申请、定义一个spi_driver，然后初始化spi_driver中的各个成员变量，当SPI设备和驱动匹配以后，spi_driver下的probe函数就会执行。spi_driver初始化成功以后需要向内核注册，使用函数spi_register_master，从内核中注销spi_driver使用函数spi_unregister_master。
+spi_driver：申请、定义一个spi_driver，然后初始化spi_driver中的各个成员变量，当SPI设备和驱动匹配以后，spi_driver下的probe函数就会执行。spi_driver初始化成功以后需要向内核注册，使用函数spi_register_driver，从内核中注销spi_driver使用函数spi_unregister_driver。
 
 ##### 二、驱动编写与测试
 
@@ -48,3 +48,6 @@ ECSPI3_SS0		   ->	UART2_TXD
 
 2、在ECSPI3节点下创建icm20608子节点。
 
+3、需要初始化icm20608芯片，然后从里面读取原始数据。这个过程就要用到如何使用Linux内的SPI驱动API来读写icm20608。用到两个重要的结构体：spi_transfer和spi_message。
+
+spi_transfer用来构建收发数据内容。构建spi_transfer，然后将其打包到spi_message里面。需要使用spi_message_init初始化api_message，然后使用spi_message_add_tail将spi_transfer添加到spi_message里面，最终使用spi_sync和spi_async来发送。

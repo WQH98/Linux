@@ -19,5 +19,9 @@
         "Documentation":true, 
     },
     "C_Cpp.errorSquiggles": "disabled",
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "files.associations": {
+        "*.s": "arm",
+        "time.h": "c"
+    }
 }
